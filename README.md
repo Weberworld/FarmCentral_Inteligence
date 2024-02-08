@@ -78,6 +78,7 @@ subsequent requests
 
 #
 <h3 id="register">Registration API</h3>
+
 ```
 Method: POST
 Login endpoint: .../accounts/login
