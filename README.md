@@ -86,7 +86,7 @@ Login endpoint: .../db/accounts/register
 
 
 Register a new farmer profile. 
-On successful registration, generates a unique username for the 
+On successful registration, a unique username will be generated for the 
 registered profile
 <table>
     <tr>
@@ -144,10 +144,12 @@ registered profile
 ```json
 {
   
-  "first_name": "EXAMPLE FIRST NAME",
-  "last_name": "EXAMPLE LAST NAME",
-  "email": "example@email.com",
-  "phone": "1111111111",
+  "account": {
+    "first_name": "EXAMPLE FIRST NAME",
+    "last_name": "EXAMPLE LAST NAME",
+    "email": "example@email.com",
+    "phone": "1111111111"
+  },
   "nin": "14262728101202",
   "bvn": "12933390303",
   "gender": "male",
