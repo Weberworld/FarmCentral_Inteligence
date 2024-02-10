@@ -16,13 +16,13 @@
             </td>
         </tr>
     <tr>
-        <td> <a href="#register">.../farm_directory/accounts/register</a> </td>
+        <td> <a href="#register">.../db/accounts/register</a> </td>
         <td>
             <b>Register a new account into FarmCI directory</b>
         </td>
     </tr>
     <tr>
-        <td><a href="#keyword-search">.../farm_directory/db/search?key</a></td>
+        <td><a href="#keyword-search">.../db/search?key</a></td>
          <td>
             <b>Search FarmCI farm Directory using keywords</b>
         </td>
@@ -43,7 +43,7 @@ Method: POST
 Login endpoint: /accounts/login
 ```
 
-Logs into a farmci account profile: 
+Logs into a FarmCI account profile: 
 Get the authentication token for authorizing 
 subsequent requests
 
