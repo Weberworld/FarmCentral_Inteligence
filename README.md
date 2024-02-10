@@ -80,7 +80,7 @@ subsequent requests
 <h3 id="register">Registration API</h3>
 ```
 Method: POST
-Login endpoint: .../accounts/login
+Login endpoint: .../db/accounts/register
 ```
 
 
@@ -197,7 +197,7 @@ registered profile
 
 ```
 Method: GET
-Endpoint: ../farm_directory/db/search/?key
+Endpoint: ../db/search/?key
 ```
 
 Search our farm directory database using keywords. This search focuses

@@ -5,13 +5,15 @@ from account.models import Account
 from farm_directory.models import FarmDirectory
 from test_utils.account_utils import create_test_user, create_farm_directory_entry
 
-BASE_TEST_ENDPOINT = "http://127.0.0.1:8000/"
+BASE_TEST_ENDPOINT = "/"
 
 
 class FarmDirectoryRegistrationTest(APITestCase):
 
-    def setUp(self):
-        self.request_data = {
+    @classmethod
+    def setUpClass(cls):
+        super(FarmDirectoryRegistrationTest, cls).setUpClass()
+        cls.request_data = {
             "account": {
                 "first_name": "test_first_name",
                 "last_name": "test_last_name",
@@ -24,7 +26,7 @@ class FarmDirectoryRegistrationTest(APITestCase):
             "state": "test state",
             "country": "test country",
         }
-        self.endpoint = BASE_TEST_ENDPOINT + "farm_directory/accounts/register"
+        cls.endpoint = "/db/accounts/register"
 
     def check_used_credentials_responses(self, res, credential_type):
         self.assertEqual(res.status_code, 403, "Used credential must return a 403  forbidden error")
@@ -100,10 +102,11 @@ class FarmDirectoryRegistrationTest(APITestCase):
 
 class SearchDirectoryTest(APITestCase):
     """
-    Tests the search directory endpoint. Usage of keuyword search
+    Tests the search directory endpoint. Usage of keyword search
     """
-
-    def setUp(self) -> None:
+    @classmethod
+    def setUpClass(cls) -> None:
+        super(SearchDirectoryTest, cls).setUpClass()
         # Create 10 test users
         test_users = [
             create_test_user(username=f"test{i}", email=f"test{i}@email.com", password=f"test{i}", phone=i)
@@ -115,7 +118,7 @@ class SearchDirectoryTest(APITestCase):
             create_farm_directory_entry(
                 user, gender="male", state="ogun", country="Nigeria", crop_type="maize")
 
-        self.endpoint = BASE_TEST_ENDPOINT + "farm_directory/search/"
+        cls.endpoint = "/db/search/"
 
     def check_keyword_search_response(self, res, expected_keyword):
         res_body = res.json()['responseBody']
