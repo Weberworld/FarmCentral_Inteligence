@@ -102,6 +102,10 @@ registered profile
         <td>Last name of the farmer / User</td>
     </tr>
     <tr>
+        <td>password: string</td>
+        <td>User's password</td>
+    </tr>
+    <tr>
         <td>email: string</td>
         <td>Email of the farmer / User</td>
     </tr>
@@ -148,7 +152,8 @@ registered profile
     "first_name": "EXAMPLE FIRST NAME",
     "last_name": "EXAMPLE LAST NAME",
     "email": "example@email.com",
-    "phone": "1111111111"
+    "phone": "1111111111",
+    "password": "myPassword"
   },
   "nin": "14262728101202",
   "bvn": "12933390303",
@@ -167,7 +172,7 @@ registered profile
   "responseBody": {
     "login": {
       "username": "FSI_Generated Username",
-      "password": "User account Password",
+      "password": "myPassword",
       "login_url": "https://api.farmci.com/accounts/login"
     },
     "message": "FSI_Generated Useraname has been registered",
