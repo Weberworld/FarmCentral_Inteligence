@@ -1,16 +1,16 @@
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'django-insecure-#$gzef8a3!f+cbzh_3st$zn%)w+#-d=5^_y5@ei-tf3%-s@=!c'
+SECRET_KEY = os.getenv("APP_SECRET_KEY")
 
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.getenv("SERVER_DOMAIN")]
 
 AUTH_USER_MODEL = "account.Account"
 
