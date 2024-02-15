@@ -99,6 +99,7 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
+t = ";"
 
 USE_TZ = True
 
