@@ -5,14 +5,18 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = os.getenv("APP_SECRET_KEY")
+SECRET_KEY = 'os.getenv("APP_SECRET_KEY")'
 
 
 DEBUG = True
 
-ALLOWED_HOSTS = [os.getenv("SERVER_DOMAIN")]
+ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "account.Account"
+
+# CORS ORIGIN ALLOWS
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 # Application definition
 
@@ -24,16 +28,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     "rest_framework",
     "rest_framework.authtoken",
     "account.apps.AccountConfig",
     "farm_directory.apps.FarmDirectoryConfig",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+
+    # Include the cors middleware
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
     'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -61,9 +72,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'farmci.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -71,9 +79,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -99,7 +104,6 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-t = ";"
 
 USE_TZ = True
 

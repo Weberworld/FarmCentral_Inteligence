@@ -12,6 +12,7 @@ class FarmDirectoryRegistrationTest(APITestCase):
 
     @classmethod
     def setUpClass(cls):
+        # Create a one off setup data
         super(FarmDirectoryRegistrationTest, cls).setUpClass()
         cls.request_data = {
             "account": {

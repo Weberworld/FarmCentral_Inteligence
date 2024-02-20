@@ -75,6 +75,7 @@ class KeywordSearchFarmDirectoryView(APIView):
                 continue
             except AttributeError:
                 continue
+
         results = ResultSearchDirectorySerializer(matches, many=True)
 
         if matches:
@@ -86,6 +87,7 @@ class KeywordSearchFarmDirectoryView(APIView):
                     "results": results.data
                 }
             })
+
         else:
             return Response({
                 "success": True, "responseMessage":  "no match",
