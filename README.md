@@ -134,6 +134,10 @@ registered profile
         <td>User street address</td>
     </tr>
     <tr>
+        <td>crop_type: string</td>
+        <td>Farmer's production</td>
+    </tr>
+    <tr>
         <td>state: string</td>
         <td>Residential state of the user</td>
     </tr>
@@ -157,6 +161,7 @@ registered profile
   },
   "nin": "14262728101202",
   "bvn": "12933390303",
+  "crop_type": "maize"
   "gender": "male",
   "street_address": "12, PO BOX, Angeles Avenue",
   "state": "Lagos",
