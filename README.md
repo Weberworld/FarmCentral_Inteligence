@@ -181,7 +181,7 @@ registered profile
 }
 ```
 
-
+#
 <h3 id="login"> Login API:  Get Auth Token</h3> 
 
 ``` 
@@ -240,7 +240,7 @@ Authentication: Token Authentication
 {
   "success": true,
   "responseMessage": "retrieval successful", 
-  "responseBody": "An email containing your username and password has been to sent to the registered email address",
+  "responseBody": "An email containing your username and password has been to sent to the registered email address"
 }
 ```
 
@@ -268,7 +268,7 @@ Get the details of a farmer. Include the generated token in the request headers 
 ```json
 {
   "success": true,
-  "responseMessage": "profile retrieved successfull",
+  "responseMessage": "profile retrieved successful",
   "responseBody": {
     "profile": {
       "username": "PROFILE USERNAME",

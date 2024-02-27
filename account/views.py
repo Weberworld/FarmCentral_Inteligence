@@ -64,8 +64,8 @@ class ChangeUserPasswordView(APIView):
 
 
 class ForgottenUsernameView(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     @staticmethod
     def get(request):
