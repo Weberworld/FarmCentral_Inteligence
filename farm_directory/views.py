@@ -1,12 +1,14 @@
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response
 
 from account.models import Account
 from account.serializers import UserLoginSerializer
 from farm_directory.models import FarmDirectory
 from farm_directory.serializers import FarmerDirectoryRegistrationSerializer, \
-    ResultSearchDirectorySerializer
+    ResultSearchDirectorySerializer, FarmerProfileSerializer
 from utils.utils import parse_search_key
 
 
@@ -49,6 +51,29 @@ class FarmersRegistrationView(APIView):
             }, status.HTTP_400_BAD_REQUEST)
 
 
+# Profile Details View
+class UserProfileView(APIView):
+    """
+    Gets the user farm details
+    """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+    def post(self, request):
+        print(request)
+        serializer = FarmerProfileSerializer(request.user.farmdirectory)
+        # Remove the password field from the response data
+
+        return Response({
+            "success": True, "responseMessage": "profile retrieved successful",
+            "responseBody": {
+                "user": serializer.data
+            }
+        })
+
+
+
 # Filter Endpoint
 class KeywordSearchFarmDirectoryView(APIView):
     pagination_class = []
@@ -75,7 +100,6 @@ class KeywordSearchFarmDirectoryView(APIView):
                 continue
             except AttributeError:
                 continue
-
         results = ResultSearchDirectorySerializer(matches, many=True)
 
         if matches:
@@ -87,7 +111,6 @@ class KeywordSearchFarmDirectoryView(APIView):
                     "results": results.data
                 }
             })
-
         else:
             return Response({
                 "success": True, "responseMessage":  "no match",

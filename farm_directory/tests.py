@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 from account.models import Account
@@ -157,3 +158,28 @@ class SearchDirectoryTest(APITestCase):
         res = self.client.get(self.endpoint + "lag")
         self.assertEqual(res.status_code, 404, "Server should return a status code of 404 for un-matched search keywords")
         self.assertEqual(res.json()['responseBody'].lower(), "no match")
+
+
+class UserProfileTest(APITestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(UserProfileTest, cls).setUpClass()
+        cls.endpoint = "/db/get/user/profile"
+        user = create_test_user()
+        create_farm_directory_entry(account=user)
+        token, created = Token.objects.get_or_create(user=user)
+        cls.token = token.key
+        print(token)
+
+
+
+    def test_valid_token(self):
+        header = {
+            "Authorization": f"Token {self.token}",
+            "Content-Type": "application/json"
+        }
+        print(header)
+        res = self.client.post("/db/get/user/profile", headers=header)
+        print(res.status_code)
+        print(res.json())
+        self.assertEqual(res.status_code, 200)

@@ -38,6 +38,23 @@ class FarmerDirectoryRegistrationSerializer(serializers.ModelSerializer):
         return rep
 
 
+class FarmerProfileSerializer(serializers.ModelSerializer):
+    account = UserAccountSerializer()
+
+    class Meta:
+        model = FarmDirectory
+        exclude = ["bvn", "nin"]
+
+    def to_representation(self, instance):
+        rep = super(FarmerProfileSerializer, self).to_representation(instance)
+        account_keys = rep['account'].keys()
+        for key in account_keys:
+            rep[key] = rep["account"][key]
+        rep.pop("account")
+        rep.pop("password")
+        rep.pop("id")
+        return rep
+
 class ResultSearchDirectorySerializer(serializers.ModelSerializer):
     """
         Serializer class for farm directory search result. It ensures that only set data are rendered

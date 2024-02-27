@@ -33,7 +33,8 @@ class UserAccountSerializer(serializers.ModelSerializer):
     For Serializing user account fields attr
     """
     password = serializers.CharField()
+    username = serializers.CharField(required=False)
 
     class Meta:
         model = Account
-        fields = ["password", "first_name", "last_name", "email", "phone"]
+        fields = ["password", "first_name", "last_name", "email", "phone", "username"]
