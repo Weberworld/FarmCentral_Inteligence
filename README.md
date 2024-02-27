@@ -258,8 +258,8 @@ Get the details of a farmer. Include the generated token in the request headers 
 
 ``` json
 {
-    Authentication: "Token < AUTHENTICATION TOKEN >",
-    Content-Type: "application/json"
+    "Authentication": "Token < AUTHENTICATION TOKEN >",
+    "Content-Type": "application/json"
  }
 ```
 
