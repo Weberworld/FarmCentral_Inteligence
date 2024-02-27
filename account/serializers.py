@@ -16,9 +16,13 @@ class UserLoginSerializer(Serializer):
         """
         try:
             user = Account.objects.get(username=self.validated_data['username'])
+
         except ObjectDoesNotExist:
-            self.error_messages = "Invalid username"
-            return None
+            try:
+                user = Account.objects.get(email=self.validated_data['username'])
+            except ObjectDoesNotExist:
+                self.error_messages = "Invalid username / email"
+                return None
 
         if user:
             if check_password(self.validated_data['password'], user.password):
@@ -33,8 +37,14 @@ class UserAccountSerializer(serializers.ModelSerializer):
     For Serializing user account fields attr
     """
     password = serializers.CharField()
-    username = serializers.CharField(required=False)
 
     class Meta:
         model = Account
-        fields = ["password", "first_name", "last_name", "email", "phone", "username"]
+        fields = ["password", "first_name", "last_name", "email", "phone"]
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+

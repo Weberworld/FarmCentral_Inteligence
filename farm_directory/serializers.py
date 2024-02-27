@@ -55,6 +55,7 @@ class FarmerProfileSerializer(serializers.ModelSerializer):
         rep.pop("id")
         return rep
 
+
 class ResultSearchDirectorySerializer(serializers.ModelSerializer):
     """
         Serializer class for farm directory search result. It ensures that only set data are rendered

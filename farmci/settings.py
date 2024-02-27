@@ -17,6 +17,13 @@ AUTH_USER_MODEL = "account.Account"
 # CORS ORIGIN ALLOWS
 CORS_ORIGIN_ALLOW_ALL = True
 
+# EMAIL BACKEND SETTINGS
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = "587"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
+
 
 # Application definition
 
@@ -27,7 +34,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
 
     "rest_framework",
     "rest_framework.authtoken",

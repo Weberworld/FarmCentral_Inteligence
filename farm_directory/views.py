@@ -7,8 +7,7 @@ from rest_framework.views import APIView, Response
 from account.models import Account
 from account.serializers import UserLoginSerializer
 from farm_directory.models import FarmDirectory
-from farm_directory.serializers import FarmerDirectoryRegistrationSerializer, \
-    ResultSearchDirectorySerializer, FarmerProfileSerializer
+from farm_directory.serializers import FarmerDirectoryRegistrationSerializer, ResultSearchDirectorySerializer
 from utils.utils import parse_search_key
 
 
@@ -59,19 +58,20 @@ class UserProfileView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    @staticmethod
+    def post(request):
+        serializer = FarmerDirectoryRegistrationSerializer(request.user.farmdirectory)
 
-    def post(self, request):
-        print(request)
-        serializer = FarmerProfileSerializer(request.user.farmdirectory)
-        # Remove the password field from the response data
-
+        # Remove the password and id field from the response data
+        cleaned_data = serializer.data.copy()
+        cleaned_data.pop("password")
+        cleaned_data.pop("id")
         return Response({
             "success": True, "responseMessage": "profile retrieved successful",
             "responseBody": {
-                "user": serializer.data
+                "profile": cleaned_data
             }
         })
-
 
 
 # Filter Endpoint

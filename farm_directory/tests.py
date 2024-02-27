@@ -10,6 +10,9 @@ BASE_TEST_ENDPOINT = "/"
 
 
 class FarmDirectoryRegistrationTest(APITestCase):
+    """
+        TestCase for the registration View API
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -103,6 +106,7 @@ class FarmDirectoryRegistrationTest(APITestCase):
 
 
 class SearchDirectoryTest(APITestCase):
+
     """
     Tests the search directory endpoint. Usage of keyword search
     """
@@ -160,26 +164,44 @@ class SearchDirectoryTest(APITestCase):
         self.assertEqual(res.json()['responseBody'].lower(), "no match")
 
 
-class UserProfileTest(APITestCase):
+
+
+class UserProfileViewTest(APITestCase):
+    """
+     TestCase for getting user profile endpoint
+    """
     @classmethod
     def setUpClass(cls):
-        super(UserProfileTest, cls).setUpClass()
-        cls.endpoint = "/db/get/user/profile"
+        super(UserProfileViewTest, cls).setUpClass()
+        cls.endpoint = "/db/users/farm/get/profile"
         user = create_test_user()
         create_farm_directory_entry(account=user)
         token, created = Token.objects.get_or_create(user=user)
-        cls.token = token.key
-        print(token)
-
-
-
-    def test_valid_token(self):
-        header = {
-            "Authorization": f"Token {self.token}",
+        cls.headers = {
+            "Authorization": f"Token {token.key}",
             "Content-Type": "application/json"
         }
-        print(header)
-        res = self.client.post("/db/get/user/profile", headers=header)
-        print(res.status_code)
-        print(res.json())
+        cls.user = user
+
+
+    def test_valid_token_returns_user_credentials(self):
+        res = self.client.post(self.endpoint, headers=self.headers)
+        json_res = res.json()
         self.assertEqual(res.status_code, 200)
+        print(json_res)
+        self.assertEqual(json_res['success'], True)
+        self.assertEqual(self.user.email, json_res['responseBody']['profile']['email'], "The returned user email must match the token user")
+
+
+    def test_no_token_sent(self):
+        res = self.client.post(self.endpoint, headers={})
+        print(res.json())
+
+        self.assertEqual(res.status_code, 401, "Request without token must fail with a status code of 403")
+
+    def test_invalid_token_fails(self):
+        invalid_header = self.headers.copy()
+        invalid_header["Authorization"] = "Token invalid_token"
+
+        res = self.client.post(self.endpoint, headers=invalid_header)
+        self.assertEqual(res.status_code, 401, "Invalid headers must fail with a status code of 404")
