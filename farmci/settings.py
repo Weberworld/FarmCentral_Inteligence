@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("APP_SECRET_KEY")
 
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [os.getenv("SERVER_DOMAIN")]
 
