@@ -16,11 +16,10 @@ class UserLoginView(APIView):
 
     Returns: authentication token
     """
-    permission_classes = []
     serializer_class = UserLoginSerializer
 
     def post(self, requests):
-        serializer = UserLoginSerializer(data=requests.POST)
+        serializer = UserLoginSerializer(data=requests.data)
         if serializer.is_valid():
             user = serializer.authenticate()
             if user:
@@ -68,10 +67,9 @@ class ForgottenUsernameView(APIView):
     permission_classes = [IsAuthenticated]
 
     @staticmethod
-    def get(request):
+    def post(request):
         # Send a mail to the user
         print("Confirmation email has been sent to user")
-        request.user = Account.objects.get(username="Weber")
         send_mail(
             subject="Request for Username",
             message=f""

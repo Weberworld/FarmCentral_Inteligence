@@ -188,15 +188,12 @@ class UserProfileViewTest(APITestCase):
         res = self.client.post(self.endpoint, headers=self.headers)
         json_res = res.json()
         self.assertEqual(res.status_code, 200)
-        print(json_res)
         self.assertEqual(json_res['success'], True)
         self.assertEqual(self.user.email, json_res['responseBody']['profile']['email'], "The returned user email must match the token user")
 
 
     def test_no_token_sent(self):
         res = self.client.post(self.endpoint, headers={})
-        print(res.json())
-
         self.assertEqual(res.status_code, 401, "Request without token must fail with a status code of 403")
 
     def test_invalid_token_fails(self):

@@ -110,10 +110,8 @@ class ForgottenUsernameViewTestData(BaseTestSetupData):
         """
         Tests if valid authentication token will return a successful response and if the email is sent to the user
         """
-        print(self.endpoint)
         res = self.client.post(self.endpoint, headers=self.headers)
         self.assertEqual(res.status_code, 200)
-        print(res.json())
 
 
 class ChangePasswordViewTestData(BaseTestSetupData):

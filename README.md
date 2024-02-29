@@ -258,7 +258,7 @@ Get the details of a farmer. Include the generated token in the request headers 
 
 ``` json
 {
-    "Authentication": "Token < AUTHENTICATION TOKEN >",
+    "Authorization": "Token < AUTHENTICATION TOKEN >",
     "Content-Type": "application/json"
  }
 ```
