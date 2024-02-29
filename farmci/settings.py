@@ -5,12 +5,12 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'os.getenv("APP_SECRET_KEY")
+SECRET_KEY = os.getenv("APP_SECRET_KEY")
 
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = [os.getenv("SERVER_DOMAIN")]
 
 AUTH_USER_MODEL = "account.Account"
 
@@ -118,10 +118,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = ""
+STATIC_ROOT = "/static/"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = ""
+MEDIA_ROOT = "/media/"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
