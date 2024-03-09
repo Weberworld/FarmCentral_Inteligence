@@ -1,3 +1,6 @@
+import os
+
+from django.core.mail import send_mail
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
@@ -6,9 +9,13 @@ from rest_framework.views import APIView, Response
 
 from account.models import Account
 from account.serializers import UserLoginSerializer
+from assets.emails.email_messages import WELCOME_MESSAGE, CREDENTIAL_MESSAGE
 from farm_directory.models import FarmDirectory
-from farm_directory.serializers import FarmerDirectoryRegistrationSerializer, ResultSearchDirectorySerializer
+from farm_directory.permissions import IsAFarmer
+from farm_directory.serializers import FarmerDirectoryRegistrationSerializer, ResultSearchDirectorySerializer, \
+    NinAndBvnUpdateSerializer, FarmProfileUpdateSerializer
 from utils.utils import parse_search_key
+from assets.emails.mail import send_email
 
 
 class FarmersRegistrationView(APIView):
@@ -38,11 +45,33 @@ class FarmersRegistrationView(APIView):
             # Serialize the user login details
             login_serializer = UserLoginSerializer({"username": user_account.username, "password": password})
             login_serializer.data['login_url'] = reverse("account.login")
-            return Response({"success": True, "responseMessage": "success", "responseBody": {
-                "login": login_serializer.data},
-                "message": f"{user_account.username} has been registered",
-                "info": "Proceed to login to get authentication token",
-            })
+            send_email(
+                subject="You're welcome to FarmCI",
+                message = WELCOME_MESSAGE.format(username=user_account.get_full_name()),
+                recipient_email=user_email
+
+            )
+
+            # Send the user's email and password
+            send_email(
+                subject="Here are your Credentials",
+                message=CREDENTIAL_MESSAGE.format(
+                    username=user_account.username,
+                    password=password
+                ),
+                recipient_email=user_email
+            )
+
+
+            return Response(
+                {
+                    "success": True, "responseMessage": "success",
+                    "responseBody": {
+                        "login": login_serializer.data
+                    },
+                    "message": f"{user_account.username} has been registered",
+                    "info": "Proceed to login to get authentication token",
+                })
 
         else:
             return Response({
@@ -113,6 +142,27 @@ class KeywordSearchFarmDirectoryView(APIView):
             })
         else:
             return Response({
-                "success": True, "responseMessage":  "no match",
+                "success": True, "responseMessage": "no match",
                 "responseBody": "no match"
             }, status=status.HTTP_404_NOT_FOUND)
+
+
+class UpdateVerificationView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = [FarmProfileUpdateSerializer]
+
+    def post(self, request):
+        if not request.data:
+            return Response({
+                "success": False,
+                "responseMessage": "empty parameters",
+                "responseBody": "At least one input must be passed. (nin, bvn)"
+            })
+        print(request.data)
+        serialized_data = FarmProfileUpdateSerializer(data=request.data)
+        print(serialized_data.update(request.user.farmdirectory, serialized_data.data))
+        if serialized_data.is_valid():
+            user_farm_entry = FarmDirectory.objects.get(request.user.id)
+            return Response({"data": "collected"})
+        return Response({"data": "invalid data"})

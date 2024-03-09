@@ -79,3 +79,21 @@ class ResultSearchDirectorySerializer(serializers.ModelSerializer):
                 rep[key] = rep["account"][key]
         rep.pop("account")
         return rep
+
+
+
+class FarmProfileUpdateSerializer(serializers.Serializer):
+
+    profile = FarmerDirectoryRegistrationSerializer(required=False)
+
+    def update(self, instance: FarmDirectory, validated_data):
+        print(validated_data.keys())
+        print(instance)
+        print(validated_data)
+
+class NinAndBvnUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Account
+        fields = ["bvn", "nin"]
+        required = False

@@ -1,5 +1,8 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -8,9 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("APP_SECRET_KEY")
 
 
-DEBUG = False
+DEBUG = os.getenv("DEBUG_MODE")
 
-ALLOWED_HOSTS = [os.getenv("SERVER_DOMAIN")]
+ALLOWED_HOSTS = [os.getenv("SERVER_DOMAIN"), "127.0.0.1", "127.0.0.1:8000"]
 
 AUTH_USER_MODEL = "account.Account"
 
@@ -18,10 +21,18 @@ AUTH_USER_MODEL = "account.Account"
 CORS_ORIGIN_ALLOW_ALL = True
 
 # EMAIL BACKEND SETTINGS
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = "587"
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_USER = os.environ.get("EMAIL_USERNAME")
+EMAIL_HOST_PASSWORD=os.environ.get("EMAIL_HOST_PASSWORD")
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+
+# AUTHENTICATION SETTINGS
+DEFAULT_AUTHENTICATION_CLASSES = [
+    "TokenAuthentication"
+]
 
 
 

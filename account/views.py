@@ -1,5 +1,4 @@
 from django.contrib.auth.hashers import check_password, make_password
-from django.core.mail import send_mail
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -8,6 +7,9 @@ from rest_framework.authtoken.models import Token
 
 from .models import Account
 from .serializers import UserLoginSerializer, PasswordChangeSerializer
+
+from assets.emails.mail import send_email
+from assets.emails.email_messages import PASSWORD_RESET_MESSAGE
 
 
 class UserLoginView(APIView):
@@ -47,7 +49,6 @@ class ChangeUserPasswordView(APIView):
                 new_pswd_hash = make_password(serializer.data['new_password'])
                 requests.user.password = new_pswd_hash
                 requests.user.save()
-                print(requests.user.password)
                 return Response({
                     "success": True,
                     "responseMessage": "successful password change"
@@ -70,19 +71,13 @@ class ForgottenUsernameView(APIView):
     def post(request):
         # Send a mail to the user
         print("Confirmation email has been sent to user")
-        send_mail(
+        send_email(
             subject="Request for Username",
-            message=f""
-                    "We receive a request for your username. Below are your username and email\n\n"
-                    
-                    f"Your username: {request.user.username}\n"
-                    f"Email: {request.user.email}\n\n"
-                    f"We prioritize the safety of our farmers data.\n"
-                    f"Please reset your password if you do not make this request.\n\n"
-                    f"Thanks.\n"
-                    f"Farm Central Intelligence!!",
-            recipient_list=[request.user.email],
-            from_email="support@farmci.com"
+            recipient_email=request.user.email,
+            message=PASSWORD_RESET_MESSAGE.format(
+                username=request.user.username, full_name=request.user.get_full_name()
+            )
+
         )
         return Response({
             "success": True,

@@ -63,4 +63,3 @@ class FarmDirectory(models.Model):
 
     def __str__(self):
         return f"Farm Profile for {self.account.username}"
-

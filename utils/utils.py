@@ -26,6 +26,6 @@ def parse_search_key(key):
     except ValueError:
         # Check if the key matches a state
         for state in nigeria_states:
-            if state.lower().startswith(key) or key in state.lower():
+            if state.lower().startswith(key) or key.lower() in state.lower():
                 return "state"
         return "crop_type"

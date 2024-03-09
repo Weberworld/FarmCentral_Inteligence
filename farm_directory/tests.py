@@ -24,7 +24,7 @@ class FarmDirectoryRegistrationTest(APITestCase):
                 "last_name": "test_last_name",
                 "phone": 81249939392,
                 "password": "11111111",
-                "email": "test_email@email.com",
+                "email": "weberdeveloper478@gmail.com",
             },
             "gender": "male",
             "street_address": "test street",
@@ -202,3 +202,26 @@ class UserProfileViewTest(APITestCase):
 
         res = self.client.post(self.endpoint, headers=invalid_header)
         self.assertEqual(res.status_code, 401, "Invalid headers must fail with a status code of 404")
+
+
+
+class FarmProfileUpdateTest(APITestCase):
+
+    def setUp(self):
+        self.endpoint = "/db/users/farm/profile/update"
+        user = create_test_user()
+        create_farm_directory_entry(account=user)
+        token, created = Token.objects.get_or_create(user=user)
+        self.headers = {
+            "Authorization": f"Token {token.key}",
+            "Content-Type": "application/json"
+        }
+
+
+    def test1(self):
+        data = {
+            # "nin": "1233445677654"
+        }
+        res = self.client.post(self.endpoint, data=data, headers=self.headers, format="json")
+        print(res.content)
+        print(res.status_code)
