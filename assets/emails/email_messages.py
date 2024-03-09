@@ -26,11 +26,10 @@ CREDENTIAL_MESSAGE = EMAIL_MESSAGE_TEMPLATE.format(
 
 PASSWORD_RESET_MESSAGE = ACTIVITY_EMAIL_TEMPLATE.format(
     name="{full_name}",
-    message= """
+    message="""
     We receive a request for your username. Below are your username and email\n\n"
                     
-    Your username: {request.user.username}
-    Email: {request.user.email}
+    Your username: {username}
     
     """
 )

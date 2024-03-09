@@ -5,8 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response, APIView
 from rest_framework.authtoken.models import Token
 
-from .models import Account
-from .serializers import UserLoginSerializer, PasswordChangeSerializer
+from account.serializers import UserLoginSerializer, PasswordChangeSerializer
 
 from assets.emails.mail import send_email
 from assets.emails.email_messages import PASSWORD_RESET_MESSAGE
@@ -27,7 +26,9 @@ class UserLoginView(APIView):
             if user:
                 # Return the authentication token if credentials is valid
                 auth_token, created = Token.objects.get_or_create(user=user)
+
                 return Response({"success": True, "responseMessage": "login success", "token": auth_token.key})
+
             else:
                 return Response({'success': False, "responseMessage": serializer.error_messages}, status=status.HTTP_404_NOT_FOUND)
         else:

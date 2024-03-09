@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv("APP_SECRET_KEY")
 
 DEBUG = os.getenv("DEBUG_MODE")
 
-ALLOWED_HOSTS = [os.getenv("SERVER_DOMAIN"), "127.0.0.1", "127.0.0.1:8000"]
+ALLOWED_HOSTS = [os.getenv("SERVER_DOMAIN"), "127.0.0.1:8000"]
 
 AUTH_USER_MODEL = "account.Account"
 
@@ -23,10 +23,11 @@ CORS_ORIGIN_ALLOW_ALL = True
 # EMAIL BACKEND SETTINGS
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
-EMAIL_USER = os.environ.get("EMAIL_USERNAME")
-EMAIL_HOST_PASSWORD=os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = os.environ.get("EMAIL_USERNAME")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_SSL = True
 
 
 # AUTHENTICATION SETTINGS

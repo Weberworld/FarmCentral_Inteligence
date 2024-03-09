@@ -1,14 +1,14 @@
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.serializers import Serializer
-from .models import Account
+from account.models import Account
 from rest_framework import serializers
 
 
 class UserLoginSerializer(Serializer):
 
-    username = serializers.CharField(max_length=20)
-    password = serializers.CharField(max_length=20)
+    username = serializers.CharField()
+    password = serializers.CharField()
 
     def authenticate(self):
         """
@@ -47,4 +47,3 @@ class PasswordChangeSerializer(serializers.Serializer):
 
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
-

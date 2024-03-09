@@ -1,6 +1,3 @@
-import os
-
-from django.core.mail import send_mail
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
@@ -11,9 +8,8 @@ from account.models import Account
 from account.serializers import UserLoginSerializer
 from assets.emails.email_messages import WELCOME_MESSAGE, CREDENTIAL_MESSAGE
 from farm_directory.models import FarmDirectory
-from farm_directory.permissions import IsAFarmer
 from farm_directory.serializers import FarmerDirectoryRegistrationSerializer, ResultSearchDirectorySerializer, \
-    NinAndBvnUpdateSerializer, FarmProfileUpdateSerializer
+    FarmProfileUpdateSerializer
 from utils.utils import parse_search_key
 from assets.emails.mail import send_email
 
@@ -47,7 +43,7 @@ class FarmersRegistrationView(APIView):
             login_serializer.data['login_url'] = reverse("account.login")
             send_email(
                 subject="You're welcome to FarmCI",
-                message = WELCOME_MESSAGE.format(username=user_account.get_full_name()),
+                message=WELCOME_MESSAGE.format(username=user_account.get_full_name()),
                 recipient_email=user_email
 
             )
