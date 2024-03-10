@@ -45,19 +45,17 @@ class FarmersRegistrationView(APIView):
                 subject="You're welcome to FarmCI",
                 message=WELCOME_MESSAGE.format(username=user_account.get_full_name()),
                 recipient_email=user_email
-
             )
 
             # Send the user's email and password
             send_email(
                 subject="Here are your Credentials",
                 message=CREDENTIAL_MESSAGE.format(
-                    username=user_account.username,
-                    password=password
+                    user_id=user_account.username,
+                    password=password, email=user_account.email
                 ),
                 recipient_email=user_email
             )
-
 
             return Response(
                 {
@@ -105,12 +103,18 @@ class KeywordSearchFarmDirectoryView(APIView):
 
     @staticmethod
     def get(_, key):
+        key = str(key).lower()
         search_keyword = parse_search_key(key)
         farm_directory = FarmDirectory.objects.all()
         matches = []
         for entry in farm_directory:
             try:
-                if search_keyword == "phone":
+                if entry.account.get_full_name().lower().startswith(
+                        key) or key in entry.account.get_full_name().lower():
+                    matches.append(entry)
+                    search_keyword = "name"
+
+                elif search_keyword == "phone":
                     if entry.account.phone.startswith(key) or key in entry.account.phone:
                         matches.append(entry)
 
@@ -121,7 +125,6 @@ class KeywordSearchFarmDirectoryView(APIView):
                 elif search_keyword == "crop_type":
                     if entry.crop_type.lower().startswith(key) or key in entry.crop_type.lower():
                         matches.append(entry)
-
                 continue
             except AttributeError:
                 continue

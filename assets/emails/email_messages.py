@@ -14,9 +14,11 @@ WELCOME_MESSAGE = EMAIL_MESSAGE_TEMPLATE.format(
 
 CREDENTIAL_MESSAGE = EMAIL_MESSAGE_TEMPLATE.format(
     message="""
-    We have generated a username for your login. Please keep this save
+    We have generated a unique Id for you.
+    Here are your credentials. Please keep this save
     
-    Username: {username}
+    User Id: {user_id}
+    Username: {email}
     Password: {password}
     
     These are your login credentials to your person portal on FarmCI. Keep them save and secure.

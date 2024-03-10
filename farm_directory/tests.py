@@ -35,7 +35,8 @@ class FarmDirectoryRegistrationTest(APITestCase):
 
     def check_used_credentials_responses(self, res, credential_type):
         self.assertEqual(res.status_code, 403, "Used credential must return a 403  forbidden error")
-        self.assertIn(credential_type, res.json()['responseMessage']['errors'], f"Must display an error message for field {credential_type} if the sent value has been used")
+        self.assertIn(credential_type, res.json()['responseMessage']['errors'],
+                      f"Must display an error message for field {credential_type} if the sent value has been used")
 
     def verify_account_is_not_created(self):
 
@@ -52,7 +53,6 @@ class FarmDirectoryRegistrationTest(APITestCase):
         self.assertEqual(no_of_accounts_after, no_of_accounts_before, "A new user account must not be created")
         self.assertEqual(no_of_farm_profiles_after, no_of_farm_profiles_before,
                          "A new farm directory profile must not be created")
-
 
     def test_valid_credentials(self):
         """
@@ -77,7 +77,8 @@ class FarmDirectoryRegistrationTest(APITestCase):
                          "A new farm directory profile must be created")
 
         # Check if the view returns a username for the user
-        self.assertIn("username", res.json()["responseBody"]['login'], "Registration view must return a generated username for the registered user")
+        self.assertIn("username", res.json()["responseBody"]['login'],
+                      "Registration view must return a generated username for the registered user")
         try:
             account_exists = Account.objects.get(email=self.request_data["account"]['email'])
             try:
@@ -96,7 +97,8 @@ class FarmDirectoryRegistrationTest(APITestCase):
         self.request_data['account']['email'] = "used_email@email.com"
         res = self.client.post(self.endpoint, data=self.request_data, format="json")
         self.assertEqual(res.status_code, 400, "Used credential must return a 403  forbidden error")
-        self.assertIn("email", res.json()['responseBody']['errors']['account'], "Must display an error message for field email if the sent value has been used")
+        self.assertIn("email", res.json()['responseBody']['errors']['account'],
+                      "Must display an error message for field email if the sent value has been used")
         try:
             Account.objects.get(phone=self.request_data['account']['phone'])
             raise AssertionError("No account should be created for a used email address")
@@ -104,27 +106,28 @@ class FarmDirectoryRegistrationTest(APITestCase):
             pass
 
 
-
 class SearchDirectoryTest(APITestCase):
-
     """
     Tests the search directory endpoint. Usage of keyword search
     """
+
     @classmethod
     def setUpClass(cls) -> None:
         super(SearchDirectoryTest, cls).setUpClass()
         # Create 10 test users
-        test_users = [
-            create_test_user(username=f"test{i}", email=f"test{i}@email.com", password=f"test{i}", phone=i)
-            for i in range(10)
-        ]
+
+        user = create_test_user(
+            username=f"test1", email=f"test1@email.com", password=f"test1", phone="10202",
+            first_name="Testing", last_name="Name"
+        )
 
         # Create a farm directory for each created user
-        for user in test_users:
-            create_farm_directory_entry(
-                user, gender="male", state="ogun", country="Nigeria", crop_type="maize")
+        # for user in test_users:
+        entry = create_farm_directory_entry(
+            user, gender="male", state="ogun", country="Nigeria", crop_type="maize")
 
         cls.endpoint = "/db/search/"
+        cls.user = entry
 
     def check_keyword_search_response(self, res, expected_keyword):
         res_body = res.json()['responseBody']
@@ -138,7 +141,7 @@ class SearchDirectoryTest(APITestCase):
         Test the output when queried with a number
         """
 
-        res = self.client.get(self.endpoint + "2")
+        res = self.client.get(self.endpoint + self.user.account.phone)
         self.assertEqual(res.status_code, 200)
         self.check_keyword_search_response(res, "phone")
 
@@ -146,7 +149,7 @@ class SearchDirectoryTest(APITestCase):
         """
         Tests for the response when queried with a crop name prefix
         """
-        res = self.client.get(self.endpoint + "maiz")
+        res = self.client.get(self.endpoint + self.user.crop_type)
         self.assertEqual(res.status_code, 200)
         self.check_keyword_search_response(res, "crop_type")
 
@@ -154,22 +157,30 @@ class SearchDirectoryTest(APITestCase):
         """
         Test for the response when queried with a state name prefix
         """
-        res = self.client.get(self.endpoint + "ogun")
+        res = self.client.get(self.endpoint + self.user.state)
         self.assertEqual(res.status_code, 200)
         self.check_keyword_search_response(res, "state")
 
+    def test_search_by_account_name(self):
+        """
+        Test for the response when queried with a state name prefix
+        """
+        res = self.client.get(self.endpoint + self.user.account.first_name)
+        self.assertEqual(res.status_code, 200)
+        self.check_keyword_search_response(res, "name")
+
     def test_no_match(self):
         res = self.client.get(self.endpoint + "lag")
-        self.assertEqual(res.status_code, 404, "Server should return a status code of 404 for un-matched search keywords")
+        self.assertEqual(res.status_code, 404,
+                         "Server should return a status code of 404 for un-matched search keywords")
         self.assertEqual(res.json()['responseBody'].lower(), "no match")
-
-
 
 
 class UserProfileViewTest(APITestCase):
     """
      TestCase for getting user profile endpoint
     """
+
     @classmethod
     def setUpClass(cls):
         super(UserProfileViewTest, cls).setUpClass()
@@ -183,14 +194,13 @@ class UserProfileViewTest(APITestCase):
         }
         cls.user = user
 
-
     def test_valid_token_returns_user_credentials(self):
         res = self.client.post(self.endpoint, headers=self.headers)
         json_res = res.json()
         self.assertEqual(res.status_code, 200)
         self.assertEqual(json_res['success'], True)
-        self.assertEqual(self.user.email, json_res['responseBody']['profile']['email'], "The returned user email must match the token user")
-
+        self.assertEqual(self.user.email, json_res['responseBody']['profile']['email'],
+                         "The returned user email must match the token user")
 
     def test_no_token_sent(self):
         res = self.client.post(self.endpoint, headers={})
@@ -204,7 +214,6 @@ class UserProfileViewTest(APITestCase):
         self.assertEqual(res.status_code, 401, "Invalid headers must fail with a status code of 404")
 
 
-
 class FarmProfileUpdateTest(APITestCase):
 
     def setUp(self):
@@ -216,7 +225,6 @@ class FarmProfileUpdateTest(APITestCase):
             "Authorization": f"Token {token.key}",
             "Content-Type": "application/json"
         }
-
 
     def test1(self):
         data = {
