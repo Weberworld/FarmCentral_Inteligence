@@ -107,7 +107,6 @@ class VerifyResetPassword(APIView):
 
 
 
-
 class ChangeUserPasswordView(APIView):
 
     serializer_class = PasswordChangeSerializer
