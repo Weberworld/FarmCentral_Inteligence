@@ -12,6 +12,7 @@ from account.serializers import UserLoginSerializer, PasswordChangeSerializer, P
 
 from assets.emails.mail import send_email
 from assets.emails.email_messages import PASSWORD_RESET_MESSAGE, USERNAME_REQUEST_MESSAGE
+from assets.emails.templates import ACTIVITY_EMAIL_TEMPLATE
 from farmci import settings
 
 
@@ -34,7 +35,8 @@ class UserLoginView(APIView):
                 return Response({"success": True, "responseMessage": "login success", "token": auth_token.key})
 
             else:
-                return Response({'success': False, "responseMessage": serializer.error_messages}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'success': False, "responseMessage": serializer.error_messages},
+                                status=status.HTTP_404_NOT_FOUND)
         else:
             return Response({"error_messages": serializer.errors}, status=status.HTTP_404_NOT_FOUND)
 
@@ -42,17 +44,18 @@ class UserLoginView(APIView):
 class ResetUserPassword(APIView):
     serializer_class = PasswordResetSerializer
 
-    @staticmethod
-    def post(request):
+    def post(self, request):
+        print("Got here")
         expiry = None
-        serializer = PasswordResetSerializer(data=request.POST)
+        serializer = PasswordResetSerializer(data=request.data)
+
         if not serializer.is_valid():
             return Response({
                 "success": False,
                 "responseMessage": serializer.errors
             }, status=status.HTTP_400_BAD_REQUEST)
         try:
-            user = Account.objects.get(email=request.POST['email'])
+            user = Account.objects.get(email=serializer.validated_data['email'])
             password = serializer.validated_data['password']
             otp = OTP(user=user)
             key = otp.create(password)
@@ -95,20 +98,26 @@ class VerifyResetPassword(APIView):
     serializer_class = VerifyOtpSerializer
 
     def post(self, request):
-
-        serializer_class = VerifyOtpSerializer(data=request.POST)
+        serializer_class = VerifyOtpSerializer(data=request.data)
         if serializer_class.is_valid():
-            return Response({"success": True, "responseMessage": "password changed"})
+            send_email(
+                subject="Password Reset Successful",
+                recipient_email=serializer_class.signed_user.email,
+                message=ACTIVITY_EMAIL_TEMPLATE.format(
+                    name=serializer_class.signed_user.get_full_name().title(),
+                    message="""We have confirmed your request to reset your password. 
+                            
+                            Your password has been successfully resetted!!"""
+                )
+            )
+            return Response({"success": True, "responseMessage": "password reset successful"})
         return Response({
             "success": False,
             "responseBody": serializer_class.error_messages
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 class ChangeUserPasswordView(APIView):
-
     serializer_class = PasswordChangeSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]

@@ -40,9 +40,15 @@
         </td>
     </tr>
     <tr>
-        <td><a href="#profile">.../db/users/farm/get/profile</a></td>
+        <td><a href="#profile">.../db/users/farm/profile/get</a></td>
          <td>
             <b>Get the Profile Details of a farmer</b>
+        </td>
+    </tr>
+    <tr>
+        <td><a href="#edit">...users/farm/profile/update</a></td>
+         <td>
+            <b>Edit the Profile Details of a farmer</b>
         </td>
     </tr>
     <tr>
@@ -343,7 +349,7 @@ Authentication: Token Authentication
 ```
 Method: POST
 Authentication: Token header
-Endpoint: ../db/users/farm/get/profile
+Endpoint: ../db/users/farm/profile/get
 ```
 
 Get the details of a farmer. Include the generated token in the request headers using the below format
@@ -392,6 +398,61 @@ Get the details of a farmer. Include the generated token in the request headers 
 
 ```json
 { "detail": "Authentication credentials were not provided" }
+```
+
+
+
+#
+<h3 id="edit"> Update Farm Directory Profile API </h3>
+```
+Method: POST
+Authentication: Token header
+Endpoint: ../db/users/farm/profile/update
+```
+
+Get the details of a farmer. Include the generated token in the request headers using the below format
+
+``` json
+{
+    "Authorization": "Token < AUTHENTICATION TOKEN >",
+    "Content-Type": "application/json"
+ }
+```
+
+- Paramters are all registration fields except for username, email, bvn and nin
+- Parameters are optional but at least one of the expected parameters
+
+<b> <em>Sample Request body</em> </b>
+
+```json
+{
+  "first_name": "New First Name",
+  "last_name": "New last name",
+  "phone": "New Phone Number",
+  "gender": "female",
+  "street_address": "New Address",
+  "..."
+  
+}
+```
+<b> <em>Success Request Response: status_code: 200</em> </b>
+
+```json
+{
+  "success": true,
+  "responseMessage": "profile update successful"
+}
+```
+<b> <em>Failed Response:  status_code: 400</em> </b>
+
+```json
+{ 
+  "success": false,
+  "responseMessage": "profile update failed",
+  "responseBody": {
+    "errors": "empty edit params"
+  }
+}
 ```
 
 

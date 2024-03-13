@@ -8,5 +8,6 @@ def create_test_user(username="test_username", email="testemail@email.com", pass
 
 
 def create_farm_directory_entry(account, **kwargs):
-    new_farn_entry = FarmDirectory.objects.create(account=account, **kwargs)
+    new_farn_entry = FarmDirectory(account=account, **kwargs)
+    new_farn_entry.save()
     return new_farn_entry

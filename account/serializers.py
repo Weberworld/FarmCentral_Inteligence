@@ -47,12 +47,13 @@ class UserAccountSerializer(serializers.ModelSerializer):
 
 
 class PasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
+    email = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
 
 
 class VerifyOtpSerializer(serializers.Serializer):
     code = serializers.CharField(required=True)
+    signed_user = None
 
     def is_valid(self, *, raise_exception=False):
         """
@@ -60,8 +61,12 @@ class VerifyOtpSerializer(serializers.Serializer):
         the otp
         """
         super().is_valid()
+
         try:
             otp_obj = OTP.objects.get(pk=self.validated_data["code"])
+
+            self.signed_user = otp_obj.user
+
             if otp_obj:
                 if otp_obj.is_valid(self.validated_data["code"]):
                     return True
@@ -76,9 +81,9 @@ class VerifyOtpSerializer(serializers.Serializer):
 
 
 
-
-
 class PasswordChangeSerializer(serializers.Serializer):
 
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+

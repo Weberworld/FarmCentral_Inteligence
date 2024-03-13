@@ -52,7 +52,7 @@ class FarmDirectory(models.Model):
     """
 
     account = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
-    gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=6, choices=GENDER_CHOICES, null=True)
     crop_type = models.CharField(max_length=20, null=True)
     bvn = models.SmallIntegerField(unique=True, null=True, blank=True)
     nin = models.SmallIntegerField(unique=True, null=True, blank=True)

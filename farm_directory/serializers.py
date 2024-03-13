@@ -65,6 +65,39 @@ class FarmerProfileSerializer(serializers.ModelSerializer):
         return rep
 
 
+class EditFarmProfileSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    phone = serializers.CharField(required=False)
+
+    class Meta:
+        model = FarmDirectory
+        required = False
+        exclude = ['account', 'nin', 'bvn']
+
+        class Meta:
+            model = FarmDirectory
+
+
+    def is_valid(self, *, raise_exception=True):
+        """
+        Extends the default is_valid with checking if expected data are passed
+        """
+        super().is_valid()
+        try:
+            # print(self.fields)
+            if [each for each in self.validated_data.keys() if each in self.fields]:
+                # print(temp)
+                return True
+            else:
+                self.error_messages = "empty edit params"
+                return False
+        except AttributeError:
+
+            return False
+
+
+
 class ResultSearchDirectorySerializer(serializers.ModelSerializer):
     """
         Serializer class for farm directory search result. It ensures that only set data are rendered
@@ -90,15 +123,6 @@ class ResultSearchDirectorySerializer(serializers.ModelSerializer):
         return rep
 
 
-
-class FarmProfileUpdateSerializer(serializers.Serializer):
-
-    profile = FarmerDirectoryRegistrationSerializer(required=False)
-
-    def update(self, instance: FarmDirectory, validated_data):
-        print(validated_data.keys())
-        print(instance)
-        print(validated_data)
 
 
 class NinAndBvnUpdateSerializer(serializers.ModelSerializer):

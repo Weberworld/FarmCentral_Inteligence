@@ -184,7 +184,7 @@ class UserProfileViewTest(APITestCase):
     @classmethod
     def setUpClass(cls):
         super(UserProfileViewTest, cls).setUpClass()
-        cls.endpoint = "/db/users/farm/get/profile"
+        cls.endpoint = "/db/users/farm/profile/get"
         user = create_test_user()
         create_farm_directory_entry(account=user)
         token, created = Token.objects.get_or_create(user=user)
@@ -219,17 +219,78 @@ class FarmProfileUpdateTest(APITestCase):
     def setUp(self):
         self.endpoint = "/db/users/farm/profile/update"
         user = create_test_user()
-        create_farm_directory_entry(account=user)
+        self.farm_entry = create_farm_directory_entry(account=user, crop_type="pawpaw")
         token, created = Token.objects.get_or_create(user=user)
         self.headers = {
             "Authorization": f"Token {token.key}",
             "Content-Type": "application/json"
         }
+        self.user = user
 
-    def test1(self):
-        data = {
-            # "nin": "1233445677654"
+    def test_user_data_are_updated_with_valid_token(self):
+        """
+        Test if the user account or Farm directory data are changed after an update request is sent
+        """
+        edit_data = {
+            "first_name": "Bola",
+            "gender": "female",
+            "crop_type": "orange",
         }
-        res = self.client.post(self.endpoint, data=data, headers=self.headers, format="json")
-        print(res.content)
-        print(res.status_code)
+        res = self.client.post(self.endpoint, data=edit_data, headers=self.headers, format="json")
+        # Get the user table after update request has been sent
+        user = Account.objects.get_by_natural_key(self.user.username)
+        # Get the farm directory user record after the update request has been sent
+        farm_entry = FarmDirectory.objects.get(account=self.user)
+
+        # Assertions
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()['success'], True, "Valid token should return a success flag")
+        self.assertEqual(res.json()['responseMessage'], "profile update successful")
+
+        for i in edit_data:
+            # Compare the before update user values with the current user values after the request has been sent
+            try:
+                before_data = getattr(self.user, i)
+                after_data = getattr(user, i)
+            except AttributeError:
+                before_data = getattr(self.farm_entry, i)
+                after_data = getattr(farm_entry, i)
+            self.assertNotEqual(before_data, after_data, f"{i} field was not changed.\nThe user field should be updated to the given value")
+
+    def test_valid_token_with_empty_params(self):
+        """
+        Tests if the server returns a descriptive message when served with an empty post data
+        """
+        edit_data = {}
+        res = self.client.post(self.endpoint, data=edit_data, headers=self.headers, format="json")
+        json_res = res.json()
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(json_res["success"], False, "Empty parameter should not return a success flag")
+        self.assertEqual(json_res['responseMessage'], "profile update failed")
+
+    def test_for_uneditable_fields(self):
+        edit_data = {
+            "username": "Edited Username",
+            "bvn": 19028939309303,
+            "nin": 999222000111,
+        }
+        res = self.client.post(self.endpoint, data=edit_data, headers=self.headers, format="json")
+        # Get the user table after update request has been sent
+        user = Account.objects.get_by_natural_key(self.user.username)
+        # Get the farm directory user record after the update request has been sent
+        farm_entry = FarmDirectory.objects.get(account=self.user)
+        json_res = res.json()
+        print(json_res)
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(json_res["success"], False, "Empty parameter should not return a success flag")
+        self.assertEqual(json_res['responseMessage'], "profile update failed")
+        for i in edit_data:
+            # Compare the before update user values with the current user values after the request has been sent
+            try:
+                before_data = getattr(self.user, i)
+                after_data = getattr(user, i)
+            except AttributeError:
+                before_data = getattr(self.farm_entry, i)
+                after_data = getattr(farm_entry, i)
+            self.assertEqual(before_data, after_data, f"{i} field was changed.\nThe user field should NOT be updated to the given value")
+

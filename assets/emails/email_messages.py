@@ -42,7 +42,7 @@ PASSWORD_RESET_MESSAGE = ACTIVITY_EMAIL_TEMPLATE.format(
     Complete action with the below OTP. Expires within {expiry}.
     
     {otp}
-    
+
     """
 )
 

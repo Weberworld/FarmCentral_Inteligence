@@ -20,5 +20,6 @@ ACTIVITY_EMAIL_TEMPLATE = """
     Please reset your password if you do not make this request.
     
     Thanks.
+    
     Farm Central Intelligence!!",
 """

@@ -1,10 +1,9 @@
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 from test_utils.account_utils import create_test_user
-from .models import Account
-
+from .models import Account, OTP
 
 
 #               Base Data Base setup
@@ -112,6 +111,39 @@ class ForgottenUsernameViewTestData(BaseTestSetupData):
         """
         res = self.client.post(self.endpoint, headers=self.headers)
         self.assertEqual(res.status_code, 200)
+
+
+
+class PasswordResetRequestViewTest(BaseTestSetupData):
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.endpoint = '/accounts/reset/password'
+        self.reset_data = {
+            "email": self.user.email,
+            "password": "newPassword"
+        }
+
+    def test_otp_is_generated_for_valid_user_id_or_email(self):
+        """
+        Tests if an OTP is generated for a valid user
+        """
+        reset_data = {
+            "email": self.user.email,
+            "password": "newPassword"
+        }
+        # Get the OTP model class
+        res = self.client.post(self.endpoint, data=reset_data)
+        print(res.content)
+        self.assertEqual(res.status_code, 200)
+        user_otp = OTP.objects.get(user=self.user)
+
+        self.assertIs(check_password(self.reset_data['password'], getattr(user_otp, "signed_data")), True,
+                      "The signed data on the OTP must be the password the user wants to change to")
+
+
+    # def test_otp_is_not_created_for_invalid_user(self):
+    #     res
 
 
 # class ChangePasswordViewTestData(BaseTestSetupData):

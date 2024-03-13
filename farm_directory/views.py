@@ -9,7 +9,7 @@ from account.serializers import UserLoginSerializer
 from assets.emails.email_messages import WELCOME_MESSAGE, CREDENTIAL_MESSAGE
 from farm_directory.models import FarmDirectory
 from farm_directory.serializers import FarmerDirectoryRegistrationSerializer, ResultSearchDirectorySerializer, \
-    FarmProfileUpdateSerializer
+    NinAndBvnUpdateSerializer, EditFarmProfileSerializer
 from utils.utils import parse_search_key
 from assets.emails.mail import send_email
 
@@ -97,6 +97,31 @@ class UserProfileView(APIView):
         })
 
 
+class EditUserProfileView(APIView):
+
+    authentication_classes = [TokenAuthentication]
+    serializer_class = EditFarmProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def post(self, request):
+        serializer = EditFarmProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            user_farm_directory = FarmDirectory.objects.get(account=request.user)
+            serializer.update(request.user, serializer.validated_data)
+            serializer.update(user_farm_directory, serializer.validated_data)
+            return Response({
+                "success": True,
+                "responseMessage": "profile update successful"
+            })
+        else:
+            return Response({
+                "success": False,
+                "responseMessage": "profile update failed",
+                "responseBody": {"errors": serializer.error_messages}
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
 # Filter Endpoint
 class KeywordSearchFarmDirectoryView(APIView):
     pagination_class = []
@@ -149,7 +174,7 @@ class KeywordSearchFarmDirectoryView(APIView):
 class UpdateVerificationView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-    serializer_class = [FarmProfileUpdateSerializer]
+    serializer_class = [NinAndBvnUpdateSerializer]
 
     def post(self, request):
         if not request.data:
@@ -159,7 +184,7 @@ class UpdateVerificationView(APIView):
                 "responseBody": "At least one input must be passed. (nin, bvn)"
             })
         print(request.data)
-        serialized_data = FarmProfileUpdateSerializer(data=request.data)
+        serialized_data = NinAndBvnUpdateSerializer(data=request.data)
         print(serialized_data.update(request.user.farmdirectory, serialized_data.data))
         if serialized_data.is_valid():
             user_farm_entry = FarmDirectory.objects.get(request.user.id)
