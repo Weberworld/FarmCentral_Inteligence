@@ -104,6 +104,11 @@ registered profile
         </td>
     </tr>
     <tr>
+        <td>profile_img (Optional): file</td>
+        <td>User profile image
+        </td>
+    </tr>
+    <tr>
         <td>bvn (Optional): string</td>
         <td>Bank verification Number(BVN).
             Name must match first_name and last_name
@@ -145,7 +150,8 @@ registered profile
     "last_name": "EXAMPLE LAST NAME",
     "email": "example@email.com",
     "phone": "1111111111",
-    "password": "myPassword"
+    "password": "myPassword",
+    "profile_img": "myProfileImage.png"
   },
   "nin": "14262728101202",
   "bvn": "12933390303",
@@ -415,7 +421,8 @@ crop type name (e.g. maize, cassava, tomatoes) or a phone number prefix.
         "last_name": "Last name",
         "phone": "08123850878",
         "crop_type": "maize",
-        "state": "Lagos"
+        "state": "Lagos",
+        "profile_img": "https://api.farmci.com/media/images/user_profileImg.png"
       },
       
       ...,
@@ -425,7 +432,8 @@ crop type name (e.g. maize, cassava, tomatoes) or a phone number prefix.
         "last_name": "Last name",
         "phone": "09128389922",
         "crop_type": "cocoa",
-        "state": "Ogun"
+        "state": "Ogun",
+        "profile_img": "https://api.farmci.com/media/images/user_profileImg.png"
       }
       
     ]
