@@ -24,9 +24,11 @@ class FarmerDirectoryRegistrationSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop("account")
         user_data['username'] = f"FCI|{user_data['first_name'][0:3]}|{generate_random_string()}"
         # Check if profile picture is being uploaded
-        pic = validated_data.__getitem__("profile_pic")
-        if pic:
+        try:
+            pic = validated_data.__getitem__("profile_pic")
             user_data["profile_pic"] = pic
+        except KeyError:
+            pass
 
         user = Account.objects.create_user(**user_data)
         user.is_farmer = True
@@ -41,7 +43,10 @@ class FarmerDirectoryRegistrationSerializer(serializers.ModelSerializer):
         rep = super(FarmerDirectoryRegistrationSerializer, self).to_representation(instance)
         account_keys = rep['account'].keys()
         for key in account_keys:
-            rep[key] = rep["account"][key].title()
+            if rep["account"][key] == "first_name" or rep["account"][key] == "last_name":
+                rep[key] = rep["account"][key].title()
+            else:
+                rep[key] = rep["account"][key]
         rep.pop("account")
         return rep
 
