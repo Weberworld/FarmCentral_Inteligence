@@ -12,14 +12,22 @@ class FarmerDirectoryRegistrationSerializer(serializers.ModelSerializer):
     """
 
     account = UserAccountSerializer()
+    profile_pic = serializers.FileField(required=False)
 
     class Meta:
         model = FarmDirectory
         exclude = ['bvn', 'nin']
 
     def create(self, validated_data):
+
+
         user_data = validated_data.pop("account")
         user_data['username'] = f"FCI|{user_data['first_name'][0:3]}|{generate_random_string()}"
+        # Check if profile picture is being uploaded
+        pic = validated_data.__getitem__("profile_pic")
+        if pic:
+            user_data["profile_pic"] = pic
+
         user = Account.objects.create_user(**user_data)
         user.is_farmer = True
         user.save()
@@ -33,7 +41,7 @@ class FarmerDirectoryRegistrationSerializer(serializers.ModelSerializer):
         rep = super(FarmerDirectoryRegistrationSerializer, self).to_representation(instance)
         account_keys = rep['account'].keys()
         for key in account_keys:
-            rep[key] = rep["account"][key]
+            rep[key] = rep["account"][key].title()
         rep.pop("account")
         return rep
 
@@ -90,6 +98,7 @@ class FarmProfileUpdateSerializer(serializers.Serializer):
         print(validated_data.keys())
         print(instance)
         print(validated_data)
+
 
 class NinAndBvnUpdateSerializer(serializers.ModelSerializer):
 

@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.serializers import Serializer
-from account.models import Account
+from account.models import Account, OTP
 from rest_framework import serializers
 
 
@@ -41,6 +41,39 @@ class UserAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ["password", "first_name", "last_name", "email", "phone"]
+
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
+
+
+class VerifyOtpSerializer(serializers.Serializer):
+    code = serializers.CharField(required=True)
+
+    def is_valid(self, *, raise_exception=False):
+        """
+        Extends the super class is_valid() by also checking the validity of
+        the otp
+        """
+        super().is_valid()
+        try:
+            otp_obj = OTP.objects.get(pk=self.validated_data["code"])
+            if otp_obj:
+                if otp_obj.is_valid(self.validated_data["code"]):
+                    return True
+                else:
+                    self.error_messages = "expired otp"
+            else:
+                self.error_messages = "invalid otp"
+
+        except ObjectDoesNotExist:
+            self.error_messages = "expired otp"
+        return False
+
+
+
 
 
 class PasswordChangeSerializer(serializers.Serializer):

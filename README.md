@@ -22,6 +22,18 @@
         </td>
     </tr>
     <tr>
+        <td> <a href="#forgot-password">.../accounts/reset/password</a> </td>
+         <td>
+            <b>Request User's password reset</b>
+        </td>
+    </tr>
+    <tr>
+        <td> <a href="#verify-forgot-password">.../accounts/reset/password/verify</a> </td>
+         <td>
+            <b>Confirms a request for Password Reset with OTP</b>
+        </td>
+    </tr>
+    <tr>
         <td> <a href="#forgot-username">.../accounts/user/forgot/username</a> </td>
          <td>
             <b>Forgotten User's username</b>
@@ -218,6 +230,80 @@ subsequent requests using  either the user's email or the generated username
 {
     "success": false,
     "message": "Invalid username"
+}
+```
+
+#
+
+<h3 id="forgot-password"> Reset Password API:  Request to reset a user's password</h3>
+
+``` 
+Method: POST
+Login endpoint: /accounts/reset/password
+```
+
+Request to reset a user's password. An OTP is sent to the user's immediately when
+the request is received and confirmed
+NB: OTP is time bound ( expires )
+<b>Request body</b>
+```json
+{
+  "email": "User's email",
+  "password": "NEW USER PASSWORD"
+}
+```
+
+<b> Success Response. status_code: 200</b>
+
+```json
+{
+  "success": true,
+  "responseMessage": "otp has been sent to user's email"
+}
+```
+
+<b> Failed Response. status_code: 200</b>
+
+```json
+{
+  "success": false,
+  "responseMessage": "invalid email"
+}
+```
+
+
+#
+<h3 id="verify-forgot-password"> Verify Reset Password API:  Verify request to reset a user's password</h3>
+
+``` 
+Method: POST
+Login endpoint: /accounts/reset/password
+```
+
+Verifies the OTP signed password token
+<b>Request body</b>
+```json
+{
+  "otp": "OTP_SENT_TO_USER'S MAIL",
+
+}
+```
+
+<b> Success Response. status_code: 200</b>
+
+```json
+{
+  "success": true,
+  "responseMessage": "password changed"
+}
+```
+
+<b> Failed Response. status_code: 200</b>
+
+```json
+{
+  "success": false,
+  "responseMessage": "invalid otp" || "expired otp"
 }
 ```
 

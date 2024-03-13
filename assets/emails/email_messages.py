@@ -1,4 +1,4 @@
-from .templates import *
+from assets.emails.templates import *
 
 
 WELCOME_MESSAGE = EMAIL_MESSAGE_TEMPLATE.format(
@@ -19,9 +19,18 @@ CREDENTIAL_MESSAGE = EMAIL_MESSAGE_TEMPLATE.format(
     
     User Id: {user_id}
     Username: {email}
-    Password: {password}
     
-    These are your login credentials to your person portal on FarmCI. Keep them save and secure.
+    These are your login credentials to your personal portal on FarmCI. Keep them save and secure.
+    
+    """
+)
+
+USERNAME_REQUEST_MESSAGE = ACTIVITY_EMAIL_TEMPLATE.format(
+    name="{full_name}",
+    message="""
+    We receive a request for your . Below are your username and email\n\n"
+                    
+    Your username: {username}
     
     """
 )
@@ -29,9 +38,10 @@ CREDENTIAL_MESSAGE = EMAIL_MESSAGE_TEMPLATE.format(
 PASSWORD_RESET_MESSAGE = ACTIVITY_EMAIL_TEMPLATE.format(
     name="{full_name}",
     message="""
-    We receive a request for your username. Below are your username and email\n\n"
-                    
-    Your username: {username}
+    We received your request to reset your password. 
+    Complete action with the below OTP. Expires within {expiry}.
+    
+    {otp}
     
     """
 )

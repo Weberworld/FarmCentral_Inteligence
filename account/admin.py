@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Account
+from account.models import Account, OTP
 
 
 # Account Admin page manager
@@ -12,3 +12,6 @@ class AccountManager(admin.ModelAdmin):
 admin.site.register(Account, AccountManager)
 admin.site.site_title = "FarmCI"
 admin.AdminSite.site_header = "FarmCI"
+
+# Register the OTP model
+admin.site.register(OTP)

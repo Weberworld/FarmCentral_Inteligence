@@ -17,8 +17,10 @@ ALLOWED_HOSTS = [os.getenv("SERVER_DOMAIN"), "127.0.0.1:8000"]
 
 AUTH_USER_MODEL = "account.Account"
 
+
 # CORS ORIGIN ALLOWS
 CORS_ORIGIN_ALLOW_ALL = True
+
 
 # EMAIL BACKEND SETTINGS
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
@@ -29,6 +31,11 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_SSL = True
 
+
+# OTP SETTINGS
+# Expiry duration in secs
+OTP_EXPIRY = 120
+OTP_LENGTH = 6
 
 # AUTHENTICATION SETTINGS
 DEFAULT_AUTHENTICATION_CLASSES = [

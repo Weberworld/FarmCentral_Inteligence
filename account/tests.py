@@ -150,3 +150,11 @@ class ChangePasswordViewTestData(BaseTestSetupData):
         user = Account.objects.get(id=self.user.id)
         if not check_password("newPassword", user.password):
             raise AssertionError("User password was not changed")
+
+
+class ResetPasswordViewTest(BaseTestSetupData):
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.endpoint = "/account/reset/password/verify"
+
