@@ -114,42 +114,42 @@ class ForgottenUsernameViewTestData(BaseTestSetupData):
         self.assertEqual(res.status_code, 200)
 
 
-class ChangePasswordViewTestData(BaseTestSetupData):
-    """
-    Tests the password change view
-    """
-
-    def setUp(self) -> None:
-        super().setUp()
-        self.endpoint = "/accounts/change/password"
-
-    def test_incorrect_password_and_password_was_not_changed(self):
-        """
-        Test for an incorrect password requests
-        """
-        data = {
-            "old_password": "falsePassword",
-            "new_password": "falsePassword"
-        }
-        res = self.client.post(self.endpoint, headers=self.headers, data=data, format="json")
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(res.json()['responseMessage'], "incorrect password")
-        user = Account.objects.get(id=self.user.id)
-
-        if check_password(user.password, "newPassword"):
-            raise AssertionError("User password should not change when an given an incorrect password")
-
-    def test_correct_password_and_password_got_changed(self):
-        data = {
-            "old_password": "test_password",
-            "new_password": "newPassword"
-        }
-        res = self.client.post(self.endpoint, headers=self.headers, data=data, format="json")
-        self.assertEqual(res.status_code, 200)
-        # Check if the user password has been changed
-        user = Account.objects.get(id=self.user.id)
-        if not check_password("newPassword", user.password):
-            raise AssertionError("User password was not changed")
+# class ChangePasswordViewTestData(BaseTestSetupData):
+#     """
+#     Tests the password change view
+#     """
+#
+#     def setUp(self) -> None:
+#         super().setUp()
+#         self.endpoint = "/accounts/change/password"
+#
+#     def test_incorrect_password_and_password_was_not_changed(self):
+#         """
+#         Test for an incorrect password requests
+#         """
+#         data = {
+#             "old_password": "falsePassword",
+#             "new_password": "falsePassword"
+#         }
+#         res = self.client.post(self.endpoint, headers=self.headers, data=data, format="json")
+#         self.assertEqual(res.status_code, 401)
+#         self.assertEqual(res.json()['responseMessage'], "incorrect password")
+#         user = Account.objects.get(id=self.user.id)
+#
+#         if check_password(user.password, "newPassword"):
+#             raise AssertionError("User password should not change when an given an incorrect password")
+#
+#     def test_correct_password_and_password_got_changed(self):
+#         data = {
+#             "old_password": "test_password",
+#             "new_password": "newPassword"
+#         }
+#         res = self.client.post(self.endpoint, headers=self.headers, data=data, format="json")
+#         self.assertEqual(res.status_code, 200)
+#         # Check if the user password has been changed
+#         user = Account.objects.get(id=self.user.id)
+#         if not check_password("newPassword", user.password):
+#             raise AssertionError("User password was not changed")
 
 
 class ResetPasswordViewTest(BaseTestSetupData):

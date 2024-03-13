@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.serializers import Serializer
@@ -37,11 +39,11 @@ class UserAccountSerializer(serializers.ModelSerializer):
     For Serializing user account fields attr
     """
     password = serializers.CharField()
+    profile_img = serializers.FileField(required=False)
 
     class Meta:
         model = Account
-        fields = ["password", "first_name", "last_name", "email", "phone"]
-
+        fields = ["password", "first_name", "last_name", "email", "phone", "profile_img"]
 
 
 class PasswordResetSerializer(serializers.Serializer):

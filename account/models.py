@@ -11,7 +11,7 @@ from farmci import settings
 
 class Account(AbstractUser):
 
-    profile_pic = models.FileField(null=True, blank=True)
+    profile_img = models.FileField(null=True, blank=True, upload_to="images")
     phone = models.CharField(max_length=14, unique=True)
     email = models.EmailField(unique=True)
     is_director = models.BooleanField(default=False, verbose_name="Director")

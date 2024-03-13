@@ -12,7 +12,7 @@ class FarmerDirectoryRegistrationSerializer(serializers.ModelSerializer):
     """
 
     account = UserAccountSerializer()
-    profile_pic = serializers.FileField(required=False)
+
 
     class Meta:
         model = FarmDirectory
@@ -23,12 +23,7 @@ class FarmerDirectoryRegistrationSerializer(serializers.ModelSerializer):
 
         user_data = validated_data.pop("account")
         user_data['username'] = f"FCI|{user_data['first_name'][0:3]}|{generate_random_string()}"
-        # Check if profile picture is being uploaded
-        try:
-            pic = validated_data.__getitem__("profile_pic")
-            user_data["profile_pic"] = pic
-        except KeyError:
-            pass
+
 
         user = Account.objects.create_user(**user_data)
         user.is_farmer = True
@@ -53,6 +48,7 @@ class FarmerDirectoryRegistrationSerializer(serializers.ModelSerializer):
 
 class FarmerProfileSerializer(serializers.ModelSerializer):
     account = UserAccountSerializer()
+
 
     class Meta:
         model = FarmDirectory

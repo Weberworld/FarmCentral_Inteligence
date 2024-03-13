@@ -118,7 +118,6 @@ class ChangeUserPasswordView(APIView):
         if serializer.is_valid():
             # Check if the old password is correct
             if check_password(serializer.data['old_password'], requests.user.password):
-                print(requests.user.password)
                 new_pswd_hash = make_password(serializer.data['new_password'])
                 requests.user.password = new_pswd_hash
                 requests.user.save()
