@@ -46,7 +46,7 @@
         </td>
     </tr>
     <tr>
-        <td><a href="#edit">...users/farm/profile/update</a></td>
+        <td><a href="#edit">.../db/users/farm/profile/update</a></td>
          <td>
             <b>Edit the Profile Details of a farmer</b>
         </td>
