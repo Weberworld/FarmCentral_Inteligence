@@ -72,11 +72,12 @@ class VerifyOtpSerializer(serializers.Serializer):
                     return True
                 else:
                     self.error_messages = "expired otp"
+                    otp_obj.delete()
             else:
                 self.error_messages = "invalid otp"
 
         except ObjectDoesNotExist:
-            self.error_messages = "expired otp"
+            self.error_messages = "invalid otp"
         return False
 
 
